@@ -9,7 +9,6 @@ namespace ECommerce.Domain.Entities
     public class Product
     {
         public int Id { get; set; }
-        public int? SubCategoryId { get; set; }
         public int? BrandId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
@@ -20,7 +19,7 @@ namespace ECommerce.Domain.Entities
         public DateTime UpdatedAt { get; set; }   
 
         // Navigation
-        public SubCategory SubCategory { get; set; }
+        //public SubCategory SubCategory { get; set; }
         public Brand Brand { get; set; }
         public ICollection<ProductImage> ProductImages { get; set; } = new List<ProductImage>();
         public ICollection<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();

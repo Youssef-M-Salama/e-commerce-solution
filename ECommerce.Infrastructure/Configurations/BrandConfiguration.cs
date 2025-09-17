@@ -23,7 +23,8 @@ namespace ECommerce.Infrastructure.Configurations
                    .HasMaxLength(1000);
 
             builder.Property(b => b.LogoUrl)
-                   .HasMaxLength(500);
+                   .HasMaxLength(500)
+            .IsRequired(false);
 
             builder.Property(b => b.IsActive)
                    .HasDefaultValue(true);

@@ -43,10 +43,10 @@ namespace ECommerce.Infrastructure.Configurations
                    .HasForeignKey(p => p.BrandId)
                    .OnDelete(DeleteBehavior.SetNull);
 
-            builder.HasOne(p => p.SubCategory)
-                   .WithMany(sc => sc.Products)
-                   .HasForeignKey(p => p.SubCategoryId)
-                   .OnDelete(DeleteBehavior.Cascade);
+            //builder.HasOne(p => p.SubCategory)
+            //       .WithMany(sc => sc.Products)
+            //       .HasForeignKey(p => p.SubCategoryId)
+            //       .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasMany(p => p.ProductImages)
                    .WithOne(pi => pi.Product)

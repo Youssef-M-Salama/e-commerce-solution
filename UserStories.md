@@ -1,0 +1,43 @@
+### Customer Stories (API Consumers)
+- **US001**: As a customer, I want to browse all categories to explore different product types
+- **US002**: As a customer, I want to view a specific category with its details and subcategories
+- **US003**: As a customer, I want to see all subcategories to find more specific product types
+- **US004**: As a customer, I want to view subcategories within a specific category
+- **US005**: As a customer, I want to browse all brands to find products from specific manufacturers
+- **US006**: As a customer, I want to view a specific brand with its details
+- **US007**: As a customer, I want to browse all products with pagination and filtering
+- **US008**: As a customer, I want to view a specific product with all its details and images
+- **US009**: As a customer, I want to sign up for an account with email verification
+- **US010**: As a customer, I want to sign in to access my account
+- **US011**: As a customer, I want to reset my password if I forget it
+- **US012**: As a customer, I want to verify my reset code and update password
+- **US013**: As a customer, I want to update my profile information
+- **US014**: As a customer, I want to verify my authentication token
+- **US015**: As a customer, I want to add products to my wishlist
+- **US016**: As a customer, I want to view and manage my wishlist
+- **US017**: As a customer, I want to remove products from my wishlist
+- **US018**: As a customer, I want to add and manage multiple delivery addresses
+- **US019**: As a customer, I want to view and edit my addresses
+- **US020**: As a customer, I want to delete addresses I no longer need
+- **US021**: As a customer, I want to add products to my cart with quantities
+- **US022**: As a customer, I want to view my cart with all items and totals
+- **US023**: As a customer, I want to update quantities of items in my cart
+- **US024**: As a customer, I want to remove specific items from my cart
+- **US025**: As a customer, I want to clear my entire cart
+- **US026**: As a customer, I want to place cash-on-delivery orders
+- **US027**: As a customer, I want to make online payments through checkout sessions
+- **US028**: As a customer, I want to view all my orders
+- **US029**: As a customer, I want to view specific order details
+
+### Admin Stories (MVC Dashboard Users)
+- **US030**: As an admin, I want to view dashboard analytics and system overview
+- **US031**: As an admin, I want to manage categories (CRUD operations)
+- **US032**: As an admin, I want to manage subcategories with category relationships
+- **US033**: As an admin, I want to manage brands and their information
+- **US034**: As an admin, I want to manage products with full CRUD operations
+- **US035**: As an admin, I want to manage product images and display order
+- **US036**: As an admin, I want to assign products to multiple categories
+- **US037**: As an admin, I want to view and manage all registered users
+- **US038**: As an admin, I want to view and process all customer orders
+- **US039**: As an admin, I want to update order statuses and manage fulfillment
+- **US040**: As an admin, I want to view system reports and analytics

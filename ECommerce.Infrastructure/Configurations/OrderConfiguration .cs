@@ -43,7 +43,7 @@ namespace ECommerce.Infrastructure.Configurations
                    .HasDefaultValueSql("GETDATE()");
 
             builder.Property(o => o.UpdatedAt)
-                   .HasDefaultValueSql("GETDATE()");\
+                   .HasDefaultValueSql("GETDATE()");
 
             builder.HasMany(o=>o.OrderItems)
                 .WithOne(o => o.Order)
