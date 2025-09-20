@@ -5,7 +5,7 @@ using ECommerce.API.Admin.Application.Extensions;
 using ECommerce.Application.Extensions;
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Repositories;
-using ECommerce.Infrastructure.Helpers;
+using ECommerce.Domain.Helpers;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using System.Net;
@@ -15,16 +15,19 @@ namespace ECommerce.API.Admin.Application.Services
     public class CategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IFileStorage _fileStorage;
         private readonly IValidator<CategoryDto> _categoryValidator;
         private readonly IMapper _mapper;
         private readonly ILogger<CategoryService> _logger;
 
         public CategoryService(
+            IFileStorage fileStorage,
             ICategoryRepository categoryRepository,
             IValidator<CategoryDto> categoryValidator,
             IMapper mapper,
             ILogger<CategoryService> logger)
         {
+            _fileStorage= fileStorage ?? throw new ArgumentNullException(nameof(fileStorage));
             _categoryRepository = categoryRepository ?? throw new ArgumentNullException(nameof(categoryRepository));
             _categoryValidator = categoryValidator ?? throw new ArgumentNullException(nameof(categoryValidator));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -159,7 +162,7 @@ namespace ECommerce.API.Admin.Application.Services
 
                 if (categoryDto.ImageFile != null)
                 {
-                    categoryEntity.ImageUrl = await categoryDto.ImageFile.SaveImageAsync("categories");
+                    categoryEntity.ImageUrl = await categoryDto.ImageFile.SaveImageAsync(_fileStorage, "categories");
                 }
 
                 var currentTime = DateTime.UtcNow;
@@ -237,7 +240,7 @@ namespace ECommerce.API.Admin.Application.Services
                     var extension = Path.GetExtension(categoryDto.ImageFile.FileName).ToLowerInvariant();
                     using var stream = categoryDto.ImageFile.OpenReadStream();
 
-                    categoryEntity.ImageUrl = await FileHelper.UpdateFileAsync(stream, extension, "categories", categoryEntity.ImageUrl);
+                    categoryEntity.ImageUrl = await _fileStorage.UpdateFileAsync(stream, extension, "categories", categoryEntity.ImageUrl);
                 }
 
                 await _categoryRepository.UpdateAsync(categoryEntity, saveChanges: true);

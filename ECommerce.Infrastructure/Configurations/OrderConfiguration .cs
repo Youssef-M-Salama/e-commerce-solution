@@ -49,6 +49,10 @@ namespace ECommerce.Infrastructure.Configurations
                 .WithOne(o => o.Order)
                 .HasForeignKey(o => o.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(o => o.User)
+                   .WithMany(u => u.Orders)
+                   .HasForeignKey(o => o.UserId)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using ECommerce.API.Admin.Application.DTOs;
 using ECommerce.API.Admin.Application.Errors;
+using ECommerce.Domain.Entities;
 using ECommerce.Domain.Repositories;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
@@ -112,6 +113,10 @@ namespace ECommerce.Application.Services
 
                 if (!await DoesCategoryIDExist(categoryId))
                     errors.Add($"Category with Id {categoryId} not found.");
+                if(await DoesProductCategoryExist(productId, categoryId))
+                {
+                    errors.Add($"Product With Id {productId} is already assigned to category with id {categoryId}");
+                }
 
                 if (errors.Any())
                 {
@@ -162,7 +167,14 @@ namespace ECommerce.Application.Services
                 foreach (var catId in categoryIds)
                 {
                     if (!await DoesCategoryIDExist(catId))
+                    {
+
                         errors.Add($"Category with Id {catId} not found.");
+                    }
+                    if (await DoesProductCategoryExist(productId, catId))
+                    {
+                        errors.Add($"Product With Id {productId} is already assigned to category with id {catId}");
+                    }
                 }
 
                 if (errors.Any())

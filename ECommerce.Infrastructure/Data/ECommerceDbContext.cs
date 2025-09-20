@@ -1,10 +1,11 @@
 ﻿using ECommerce.Domain.Entities;
 using ECommerce.Infrastructure.Configurations;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Infrastructure.Data
 {
-    public class ECommerceDbContext : DbContext
+    public class ECommerceDbContext : IdentityDbContext<User,Role,int>
     {
         public ECommerceDbContext(DbContextOptions<ECommerceDbContext> options)
             : base(options)
@@ -22,6 +23,7 @@ namespace ECommerce.Infrastructure.Data
         public DbSet<CartItem> CartItems { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<UserAddress> UserAddresses { get; set; }
 
         //User
 
@@ -38,6 +40,7 @@ namespace ECommerce.Infrastructure.Data
             modelBuilder.ApplyConfiguration(new CartItemConfiguration());
             modelBuilder.ApplyConfiguration(new OrderConfiguration());
             modelBuilder.ApplyConfiguration(new OrderItemConfiguration());
+            modelBuilder.ApplyConfiguration(new UserAddressConfiguration());
         }
     }
 }

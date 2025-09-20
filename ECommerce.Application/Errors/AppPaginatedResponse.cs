@@ -1,13 +1,13 @@
-﻿namespace ECommerce.API.Admin.Application.Errors
-{
-    public class AppPaginatedResponse<T> : AppResponse<IEnumerable<T>>
+﻿    namespace ECommerce.API.Admin.Application.Errors
     {
-        public Pagination Pagination { get; set; }
-
-        public AppPaginatedResponse(IEnumerable<T> data, Pagination pagination, int statusCode = 200, List<string> errors = null)
-            : base(data, statusCode, errors)
+        public class AppPaginatedResponse<T> : AppResponse<IEnumerable<T>>
         {
-            Pagination = pagination;
+            public Pagination Pagination { get; set; }
+
+            public AppPaginatedResponse(IEnumerable<T> data, Pagination pagination, int statusCode = 200, List<string> errors = null)
+                : base(data, statusCode, errors)
+            {
+                Pagination = pagination;
+            }
         }
     }
-}

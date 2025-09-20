@@ -1,9 +1,9 @@
 ﻿using ECommerce.Application.Shared;
-using ECommerce.Infrastructure.Helpers;
+using ECommerce.Domain.Helpers;
 using Microsoft.AspNetCore.Http;
 public static class FormFileExtensions
 {
-    public static async Task<string?> SaveImageAsync(this IFormFile? file, string subFolder, int maxFileSizeInMB = 5)
+    public static async Task<string?> SaveImageAsync(this IFormFile? file, IFileStorage fileStorage, string subFolder, int maxFileSizeInMB = 5)
     {
         if (file == null || file.Length == 0) return null;
 
@@ -16,6 +16,6 @@ public static class FormFileExtensions
             throw new InvalidOperationException($"File size cannot exceed {maxFileSizeInMB} MB.");
 
         using var stream = file.OpenReadStream();
-        return await FileHelper.SaveFileAsync(stream, extension, subFolder);
+        return await fileStorage.SaveFileAsync(stream, extension, subFolder);
     }
 }

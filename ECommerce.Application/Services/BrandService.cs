@@ -5,7 +5,7 @@ using ECommerce.API.Admin.Application.Extensions;
 using ECommerce.Application.Extensions;
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Repositories;
-using ECommerce.Infrastructure.Helpers;
+using ECommerce.Domain.Helpers;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using System.Net;
@@ -15,16 +15,19 @@ namespace ECommerce.API.Admin.Application.Services
     public class BrandService
     {
         private readonly IBrandRepository _brandRepository;
+        private readonly IFileStorage _fileStorage;
         private readonly IValidator<BrandDto> _brandValidator;
         private readonly IMapper _mapper;
         private readonly ILogger<BrandService> _logger;
 
         public BrandService(
+            IFileStorage fileStorage,
             IBrandRepository brandRepository,
             IValidator<BrandDto> brandValidator,
             IMapper mapper,
             ILogger<BrandService> logger)
         {
+            _fileStorage = fileStorage ?? throw new ArgumentNullException(nameof(fileStorage));
             _brandRepository = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
             _brandValidator = brandValidator ?? throw new ArgumentNullException(nameof(brandValidator));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
@@ -114,7 +117,7 @@ namespace ECommerce.API.Admin.Application.Services
                 var entity = _mapper.Map<Brand>(brandDto);
 
                 if (brandDto.ImageFile != null)
-                    entity.LogoUrl = await brandDto.ImageFile.SaveImageAsync("brands");
+                    entity.LogoUrl = await brandDto.ImageFile.SaveImageAsync(_fileStorage, "brands");
 
                 entity.Name = entity.Name?.Trim();
                 entity.Description = entity.Description?.Trim();
@@ -174,7 +177,7 @@ namespace ECommerce.API.Admin.Application.Services
                 {
                     var extension = Path.GetExtension(brandDto.ImageFile.FileName).ToLowerInvariant();
                     using var stream = brandDto.ImageFile.OpenReadStream();
-                    entity.LogoUrl = await FileHelper.UpdateFileAsync(stream, extension, "brands", entity.LogoUrl);
+                    entity.LogoUrl = await _fileStorage.UpdateFileAsync(stream, extension, "brands", entity.LogoUrl);
                 }
 
                 await _brandRepository.UpdateAsync(entity, saveChanges: true);

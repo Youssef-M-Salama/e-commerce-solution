@@ -31,8 +31,8 @@ namespace ECommerce.Domain.Entities
 
         // Navigation property
         public ICollection<OrderItem>OrderItems { get; set; }=new List<OrderItem>();
-
-        // user navigatino will added soon
+        
+        public User User { get; set; }
 
     }
 }

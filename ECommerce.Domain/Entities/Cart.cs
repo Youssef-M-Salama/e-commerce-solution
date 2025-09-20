@@ -19,5 +19,6 @@ namespace ECommerce.Domain.Entities
 
         // Navigation property
         public ICollection<CartItem>CartItems { get; set; } = new List<CartItem>();
+        public User User { get; set; }  
     }
 }

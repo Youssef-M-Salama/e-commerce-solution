@@ -5,7 +5,7 @@ using ECommerce.API.Admin.Application.Extensions;
 using ECommerce.Application.Extensions;
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Repositories;
-using ECommerce.Infrastructure.Helpers;
+using ECommerce.Domain.Helpers;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using System.Net;
@@ -16,17 +16,20 @@ namespace ECommerce.API.Admin.Application.Services
     {
         private readonly IProductImageRepository _productImageRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IFileStorage _fileStorage;
         private readonly IValidator<ProductImageDto> _validator;
         private readonly IMapper _mapper;
         private readonly ILogger<ProductImageService> _logger;
 
         public ProductImageService(
+            IFileStorage fileStorage,
             IProductImageRepository productImageRepository,
             IProductRepository productRepository,
             IValidator<ProductImageDto> validator,
             IMapper mapper,
             ILogger<ProductImageService> logger)
         {
+            _fileStorage = fileStorage ?? throw new ArgumentNullException(nameof(fileStorage));
             _productImageRepository = productImageRepository ?? throw new ArgumentNullException(nameof(productImageRepository));
             _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
             _validator = validator ?? throw new ArgumentNullException(nameof(validator));
@@ -136,7 +139,7 @@ namespace ECommerce.API.Admin.Application.Services
                 entity.ProductId = productId;
                 entity.CreatedAt = DateTime.UtcNow;
                 entity.UpdatedAt = DateTime.UtcNow;
-                entity.ImageUrl = await dto.ImageFile.SaveImageAsync("product-images");
+                entity.ImageUrl = await dto.ImageFile.SaveImageAsync(_fileStorage, "product-images");
 
                 await _productImageRepository.AddAsync(entity);
 
@@ -193,7 +196,7 @@ namespace ECommerce.API.Admin.Application.Services
                 {
                     var extension = Path.GetExtension(dto.ImageFile.FileName).ToLowerInvariant();
                     using var stream = dto.ImageFile.OpenReadStream();
-                    entity.ImageUrl = await FileHelper.UpdateFileAsync(stream, extension, "product-images", entity.ImageUrl);
+                    entity.ImageUrl = await _fileStorage.UpdateFileAsync(stream, extension, "product-images", entity.ImageUrl);
                 }
 
                 await _productImageRepository.UpdateAsync(entity);

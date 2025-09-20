@@ -1,8 +1,11 @@
-﻿namespace ECommerce.Infrastructure.Helpers
+﻿
+using ECommerce.Domain.Helpers;
+
+namespace ECommerce.Infrastructure.Helpers
 {
-    public static class FileHelper
+    public class FileSystemStorage : IFileStorage
     {
-        public static async Task<string> SaveFileAsync(Stream stream, string extension, string subFolder)
+        public async Task<string> SaveFileAsync(Stream stream, string extension, string subFolder)
         {
             var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", subFolder);
             if (!Directory.Exists(folder))
@@ -19,7 +22,7 @@
             return $"/images/{subFolder}/{fileName}";
         }
 
-        public static bool DeleteFile(string relativePath)
+        public bool DeleteFile(string relativePath)
         {
             if (string.IsNullOrWhiteSpace(relativePath)) return false;
 
@@ -32,13 +35,11 @@
             return false;
         }
 
-        public static async Task<string> UpdateFileAsync(Stream stream, string extension, string subFolder, string? oldRelativePath)
+        public async Task<string> UpdateFileAsync(Stream stream, string extension, string subFolder, string? oldRelativePath)
         {
-            // لو فيه ملف قديم امسحه
             if (!string.IsNullOrWhiteSpace(oldRelativePath))
                 DeleteFile(oldRelativePath);
 
-            // احفظ الملف الجديد
             return await SaveFileAsync(stream, extension, subFolder);
         }
     }

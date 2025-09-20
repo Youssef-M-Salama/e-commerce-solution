@@ -19,7 +19,7 @@
 
             public Product Product { get; set; }
 
-            //user navigation add soon
+           public User User { get; set; }
 
-        }
+    }
     }

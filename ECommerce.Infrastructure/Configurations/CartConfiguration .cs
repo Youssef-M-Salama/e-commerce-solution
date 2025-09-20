@@ -22,6 +22,10 @@ namespace ECommerce.Infrastructure.Configurations
                    .WithOne(ci => ci.Cart)
                    .HasForeignKey(ci => ci.CartId)
                    .OnDelete(DeleteBehavior.Cascade);
+            builder.HasOne(c => c.User)
+                     .WithOne(u => u.Cart)
+                     .HasForeignKey<Cart>(c => c.UserId)
+                     .OnDelete(DeleteBehavior.Cascade);
 
         }
     }
