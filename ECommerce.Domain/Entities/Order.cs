@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ECommerce.Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,11 +16,11 @@ namespace ECommerce.Domain.Entities
 
         public decimal TotalAmount { get; set; }
 
-        public string Status { get; set; }  
+        public OrderStatus Status { get; set; }  =OrderStatus.Pending;
 
-        public string PaymentMethod { get; set; }
+        public PaymentStatus PaymentMethod { get; set; } 
 
-        public string PaymentStatus { get; set; }
+        public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.Pending;
 
         public string ShippingAddress { get; set; } 
 

@@ -1,50 +1,23 @@
-﻿// ---------------------------
-// External & Framework Usings
-// ---------------------------
-using Microsoft.OpenApi.Models;
-using ECommerce.API.Admin.Application.Errors;
-using ECommerce.API.Admin.Application.Mapping;
-// ---------------------------
-// Application Layer Usings
-// ---------------------------
-using ECommerce.API.Admin.Application.Services;
+﻿using ECommerce.API.Admin.Application.Mapping;
 using ECommerce.API.Admin.Application.Validators;
-using ECommerce.Application.Services;
-// ---------------------------
-// Domain Layer Usings
-// ---------------------------
+using ECommerce.Application.Shared;
 using ECommerce.Domain.Entities;
-using ECommerce.Domain.Helpers;
-using ECommerce.Domain.Repositories;
-// ---------------------------
-// Infrastructure Layer Usings
-// ---------------------------
-using ECommerce.Infrastructure.Data;
-using ECommerce.Infrastructure.Helpers;
-using ECommerce.Infrastructure.Repositories;
-using FluentValidation;
-using FluentValidation.AspNetCore;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using ECommerce.Infrastructure.DependencyInjection.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Text;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // ---------------------------
-// Add Services to the Container
-// ---------------------------
-
 // Controllers
+// ---------------------------
 builder.Services.AddControllers();
 
+// ---------------------------
 // Swagger/OpenAPI
+// ---------------------------
 builder.Services.AddEndpointsApiExplorer();
-
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Admin API", Version = "v1" });
@@ -66,72 +39,24 @@ builder.Services.AddSwaggerGen(c =>
 
     c.AddSecurityDefinition("Bearer", securityScheme);
 
-    var securityRequirement = new OpenApiSecurityRequirement
-{
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
-        new OpenApiSecurityScheme
         {
-            Reference = new OpenApiReference
+            new OpenApiSecurityScheme
             {
-                Type = ReferenceType.SecurityScheme,
-                Id = "Bearer"
-            }
-        },
-        Array.Empty<string>()
-    }
-};
-
-
-    c.AddSecurityRequirement(securityRequirement);
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            Array.Empty<string>()
+        }
+    });
 });
+builder.Services.AddScoped<IEmailService, SmtpEmailService>();
 
 
-
-// ---------------------------
-// Database Configuration
-// ---------------------------
-builder.Services.AddDbContext<ECommerceDbContext>(options =>
-    options.UseSqlServer(
-        builder.Configuration.GetConnectionString("cs"),
-        sql => sql.MigrationsAssembly("ECommerce.Infrastructure")
-    )
-);
-
-// ---------------------------
-// Repository Registrations
-// ---------------------------
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
-builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IProductImageRepository, ProductImageRepository>();
-builder.Services.AddScoped<IProductCategoryRepository, ProductCategoryRepository>();
-builder.Services.AddScoped<IBrandRepository, BrandRepository>();
-builder.Services.AddScoped<IFileStorage, FileSystemStorage>();
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserAddressRepository, UserAddressRepository>();
-
-
-// ---------------------------
-// Service Registrations
-// ---------------------------
-builder.Services.AddScoped<CategoryService>();
-builder.Services.AddScoped<BrandService>();
-builder.Services.AddScoped<ProductService>();
-builder.Services.AddScoped<ProductImageService>();
-builder.Services.AddScoped<ProductCategoryService>();
-builder.Services.AddScoped<AdminUserService>();
-builder.Services.AddScoped<UserAddressService>();
-
-
-// ---------------------------
-// AutoMapper
-// ---------------------------
-builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
-
-// ---------------------------
-// FluentValidation
-// ---------------------------
-builder.Services.AddFluentValidationAutoValidation();
-builder.Services.AddValidatorsFromAssemblyContaining<CategoryDtoValidator>();
 
 // Disable automatic model state validation → handled manually
 builder.Services.Configure<ApiBehaviorOptions>(options =>
@@ -140,63 +65,15 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 });
 
 // ---------------------------
-// Identity Configuration
+// Custom DependencyInjection Layer
 // ---------------------------
-builder.Services.AddIdentity<User, Role>(options =>
-{
-    // Password rules
-    options.Password.RequireDigit = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireUppercase = true;
-    options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequiredLength = 6;
-
-    // User & Sign-in settings
-    options.User.RequireUniqueEmail = true;
-    options.SignIn.RequireConfirmedEmail = false;
-
-    // Lockout settings
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
-    options.Lockout.MaxFailedAccessAttempts = 5;
-})
-.AddEntityFrameworkStores<ECommerceDbContext>()
-.AddDefaultTokenProviders();
-
-// ---------------------------
-// JWT Authentication
-// ---------------------------
-var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = jwtSettings["Issuer"],
-        ValidAudience = jwtSettings["Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(
-            Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]!))
-    };
-});
+builder.Services.AddECommerceCore(builder.Configuration);
+builder.Services.AddECommerceIdentity(builder.Configuration);
 
 // ---------------------------
 // Build Application
 // ---------------------------
 var app = builder.Build();
-
-//----------------------------
-// Data seeding
-await SeedDataAsync(app.Services);
-
-//----------------------------
-
 
 // ---------------------------
 // Middleware Pipeline
@@ -211,16 +88,26 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.MapControllers();
+
+// ---------------------------
+// Data Seeding (Roles + Admin User)
+// ---------------------------
 using (var scope = app.Services.CreateScope())
 {
     await SeedDataAsync(scope.ServiceProvider);
 }
 
-
-
-app.MapControllers();
-
 app.Run();
+
+
+
+
+
+
+
+
 
 // ---------------------------
 // Seed Initial Data (Roles + Admin User)
@@ -263,7 +150,7 @@ async Task SeedDataAsync(IServiceProvider services)
             UserName = "SuperAdmin",
             Email = superAdminEmail,
             IsActive = true,
-            CreatedAt = DateTime.UtcNow,    
+            CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };
         await userManager.CreateAsync(superAdminUser, "SuperAdmin123!");

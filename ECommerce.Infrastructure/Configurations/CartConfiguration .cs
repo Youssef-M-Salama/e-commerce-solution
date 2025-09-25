@@ -11,6 +11,7 @@ namespace ECommerce.Infrastructure.Configurations
             builder.ToTable("Cart");
 
             builder.HasKey(c => c.Id);
+            builder.Property(c=>c.UserId).IsRequired();
 
             builder.Property(c => c.CreatedAt)
                    .HasDefaultValueSql("GETDATE()");

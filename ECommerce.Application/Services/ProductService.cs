@@ -14,23 +14,48 @@ namespace ECommerce.Application.Services
     public class ProductService
     {
         private readonly IProductRepository _productRepository;
+        private readonly IProductImageRepository _productImageRepository;
         private readonly IBrandRepository _brandRepository;
         private readonly IValidator<ProductDto> _productValidator;
         private readonly IMapper _mapper;
         private readonly ILogger<ProductService> _logger;
 
         public ProductService(
+            IProductImageRepository productImageRepository,
             IProductRepository productRepository,
             IBrandRepository brandRepository,
             IValidator<ProductDto> productValidator,
             IMapper mapper,
             ILogger<ProductService> logger)
         {
+            _productImageRepository = productImageRepository ?? throw new ArgumentNullException(nameof(productImageRepository));
             _productRepository = productRepository ?? throw new ArgumentNullException(nameof(productRepository));
             _brandRepository = brandRepository ?? throw new ArgumentNullException(nameof(brandRepository));
             _productValidator = productValidator ?? throw new ArgumentNullException(nameof(productValidator));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+        // -------------------- GET ALL --------------------
+        public async Task<AppResponse<IEnumerable<ProductReadDto>>> GetAllAsync(string search = "")
+        {
+            try
+            {
+                var allProducts = await _productRepository.GetAllAsync(search, asNoTracking: true);
+                var dtos = allProducts.Select(p => _mapper.Map<ProductReadDto>(p)).ToList();
+                foreach (var dto in dtos)
+                {
+                    if (dto.BrandId.HasValue)
+                        dto.BrandName = await GetProductBrandNameAsync(dto.BrandId.Value);
+                }
+                return AppResponse<IEnumerable<ProductReadDto>>.SuccessResult(dtos, (int)HttpStatusCode.OK);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while retrieving products.");
+                return AppResponse<IEnumerable<ProductReadDto>>.ErrorResult(
+                    new List<string> { Messages.GetErrorOccurredMessage() },
+                    (int)HttpStatusCode.InternalServerError);
+            }
         }
 
         // -------------------- GET ALL --------------------

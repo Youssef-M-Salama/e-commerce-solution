@@ -4,11 +4,12 @@ using ECommerce.API.Admin.Application.Errors;
 using ECommerce.API.Admin.Application.Extensions;
 using ECommerce.Application.Extensions;
 using ECommerce.Domain.Entities;
-using ECommerce.Domain.Repositories;
 using ECommerce.Domain.Helpers;
+using ECommerce.Domain.Repositories;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 using System.Net;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ECommerce.API.Admin.Application.Services
 {
@@ -142,6 +143,7 @@ namespace ECommerce.API.Admin.Application.Services
                 entity.ImageUrl = await dto.ImageFile.SaveImageAsync(_fileStorage, "product-images");
 
                 await _productImageRepository.AddAsync(entity);
+                await UpdateProductMainImageAsync(productId);
 
                 var createdDto = _mapper.Map<ProductImageReadDto>(entity);
                 return AppResponse<ProductImageReadDto>.SuccessResult(createdDto, (int)HttpStatusCode.Created);
@@ -200,6 +202,7 @@ namespace ECommerce.API.Admin.Application.Services
                 }
 
                 await _productImageRepository.UpdateAsync(entity);
+                await UpdateProductMainImageAsync(productId);
 
                 var updatedDto = _mapper.Map<ProductImageReadDto>(entity);
                 return AppResponse<ProductImageReadDto>.SuccessResult(updatedDto, (int)HttpStatusCode.OK);
@@ -227,6 +230,7 @@ namespace ECommerce.API.Admin.Application.Services
                 }
 
                 await _productImageRepository.SetMainAsync(productId, imageId, saveChanges: true);
+                await UpdateProductMainImageAsync(productId);
                 return AppResponse<object>.SuccessResult(null, (int)HttpStatusCode.OK);
             }
             catch (Exception ex)
@@ -252,6 +256,8 @@ namespace ECommerce.API.Admin.Application.Services
                 }
 
                 await _productImageRepository.DeleteAsync(entity);
+                await UpdateProductMainImageAsync(productId);
+
                 return AppResponse<object>.SuccessResult(null, (int)HttpStatusCode.OK);
             }
             catch (Exception ex)
@@ -262,5 +268,19 @@ namespace ECommerce.API.Admin.Application.Services
                     (int)HttpStatusCode.InternalServerError);
             }
         }
+        // ------------ -------- HELPERS --------------------
+        private async Task UpdateProductMainImageAsync(int productId)
+        {
+            var mainImage = await _productImageRepository.GetMainOrFirstAsync(productId, asNoTracking: true);
+            var product = await _productRepository.GetByIdAsync(productId, asNoTracking: false);
+            if (product != null)
+            {
+                product.MainImageUrl = mainImage?.ImageUrl;
+                await _productRepository.UpdateAsync(product);
+            }
+        }
+
     }
+
+
 }

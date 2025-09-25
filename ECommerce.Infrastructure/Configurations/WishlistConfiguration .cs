@@ -12,16 +12,17 @@ namespace ECommerce.Infrastructure.Configurations
 
             builder.HasKey(w => w.Id);
 
-            builder.Property(w => w.CreatedAt)
+            builder.Property(w => w.UserId).IsRequired();
+
+            builder.HasIndex(w=>w.UserId)
+                   .IsUnique();
+
+            builder.Property(w=>w.CreatedAt)
                    .HasDefaultValueSql("GETDATE()");
 
-            builder.HasOne(w => w.Product)
-                   .WithMany(p => p.Wishlists) 
-                   .HasForeignKey(w => w.ProductId)
-                   .OnDelete(DeleteBehavior.Cascade);
             builder.HasOne(w => w.User)
-                .WithMany(u => u.Wishlists)
-                     .HasForeignKey(w => w.UserId)
+                .WithOne(u => u.Wishlist)
+                     .HasForeignKey<Wishlist>(w => w.UserId)
                      .OnDelete(DeleteBehavior.Cascade); 
 
         }

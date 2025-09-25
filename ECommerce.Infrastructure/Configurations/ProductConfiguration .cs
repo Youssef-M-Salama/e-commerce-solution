@@ -58,7 +58,7 @@ namespace ECommerce.Infrastructure.Configurations
                    .HasForeignKey(pc => pc.ProductId)
                    .OnDelete(DeleteBehavior.Cascade);
 
-            builder.HasMany(p => p.Wishlists)
+            builder.HasMany(p => p.WishlistItems)
                .WithOne(w => w.Product)
                 .HasForeignKey(w => w.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);

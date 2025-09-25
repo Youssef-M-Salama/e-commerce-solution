@@ -2,6 +2,7 @@
 using ECommerce.API.Admin.Application.DTOs;
 using ECommerce.API.Admin.Application.Errors;
 using ECommerce.API.Admin.Application.Extensions;
+using ECommerce.Application.Shared;
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Repositories;
 using FluentValidation;
@@ -29,8 +30,11 @@ namespace ECommerce.API.Admin.Application.Services
         private readonly IValidator<UpdateUserDto> _updateUserValidator;
         private readonly IMapper _mapper;
         private readonly ILogger<AdminUserService> _logger;
+        private readonly JwtTokenHelper _jwtTokenHelper;
+
 
         public AdminUserService(
+            JwtTokenHelper jwtTokenHelper,
             SignInManager<User> signInManager,
             IUserRepository userRepository,
             UserManager<User> userManager,
@@ -41,7 +45,7 @@ namespace ECommerce.API.Admin.Application.Services
             IMapper mapper,
             ILogger<AdminUserService> logger)
         {
-
+            _jwtTokenHelper=jwtTokenHelper?? throw new ArgumentNullException(nameof(jwtTokenHelper));
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
@@ -247,7 +251,7 @@ namespace ECommerce.API.Admin.Application.Services
                 user.IsActive = false;
                 user.UpdatedAt = DateTime.UtcNow;
 
-                var result = await _userManager.UpdateAsync(user);
+                var result = await _userManager.DeleteAsync(user);
                 if (!result.Succeeded)
                 {
                     var errors = result.Errors.Select(e => e.Description).ToList();
@@ -316,7 +320,8 @@ namespace ECommerce.API.Admin.Application.Services
                 }
 
                 // Generate token
-                var token = await GenerateJwtTokenAsync(user);
+                var token = await _jwtTokenHelper.GenerateTokenAsync(user);
+
                 var roles = await _userManager.GetRolesAsync(user);
 
                 var dtoUser = new UserReadDto
@@ -348,34 +353,6 @@ namespace ECommerce.API.Admin.Application.Services
             }
         }
 
-        private async Task<string> GenerateJwtTokenAsync(User user)
-        {
-            var userClaims = await _userManager.GetClaimsAsync(user);
-            var userRoles = await _userManager.GetRolesAsync(user);
-
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.UserName ?? ""),
-                new Claim(ClaimTypes.Email, user.Email ?? ""),
-                new Claim("uid", user.Id.ToString())
-            };
-
-            claims.AddRange(userRoles.Select(role => new Claim(ClaimTypes.Role, role)));
-            claims.AddRange(userClaims);
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:SecretKey"]!));//exption reson
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["JwtSettings:Issuer"],
-                audience: _configuration["JwtSettings:Audience"],
-                claims: claims,
-                expires: DateTime.UtcNow.AddDays(7),
-                signingCredentials: credentials
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
-        }
+        
     }
 }

@@ -11,6 +11,10 @@ namespace ECommerce.Infrastructure.Configurations
             builder.ToTable("CartItem");
 
             builder.HasKey(ci => ci.Id);
+            builder.Property(ci=>ci.CartId)
+                   .IsRequired();
+            builder.Property(ci => ci.ProductId)
+                .IsRequired();
 
             builder.Property(ci => ci.Quantity)
                    .IsRequired()

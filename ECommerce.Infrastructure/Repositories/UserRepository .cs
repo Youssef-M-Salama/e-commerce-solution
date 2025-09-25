@@ -112,8 +112,7 @@ namespace ECommerce.Infrastructure.Repositories
         public async Task<User?> GetUserWithWishlistAsync(int userId, bool asNoTracking = false)
         {
             var query = _context.Users
-                .Include(u => u.Wishlists)
-                    .ThenInclude(w => w.Product)
+                .Include(u => u.Wishlist)
                 .AsQueryable();
 
             if (asNoTracking)

@@ -8,7 +8,7 @@ namespace ECommerce.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<OrderItem> builder)
         {
-            builder.ToTable("OrderItem");
+            builder.ToTable("OrderItems");
 
             builder.HasKey(oi => oi.Id);
 
@@ -22,6 +22,12 @@ namespace ECommerce.Infrastructure.Configurations
             builder.Property(oi => oi.TotalPrice)
                    .HasColumnType("decimal(18,2)")
                    .IsRequired();
+
+            builder.HasIndex(oi => oi.OrderId);
+            builder.HasIndex(oi => oi.ProductId);
+
+            builder.Ignore(oi => oi.TotalPrice);
+
 
             builder.HasOne(oi => oi.Order)
                    .WithMany(o => o.OrderItems)

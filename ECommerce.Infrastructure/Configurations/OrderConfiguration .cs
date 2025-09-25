@@ -1,4 +1,5 @@
 ﻿using ECommerce.Domain.Entities;
+using ECommerce.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -8,7 +9,7 @@ namespace ECommerce.Infrastructure.Configurations
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
-            builder.ToTable("Order");
+            builder.ToTable("Orders");
 
             builder.HasKey(o => o.Id);
 
@@ -24,20 +25,22 @@ namespace ECommerce.Infrastructure.Configurations
                    .IsRequired();
 
             builder.Property(o => o.Status)
+                   .HasConversion<string>()
                    .HasMaxLength(50)
-                   .HasDefaultValue("Pending");
-
-            builder.Property(o => o.PaymentMethod)
-                   .HasMaxLength(50);
+                   .HasDefaultValue(OrderStatus.Pending);
 
             builder.Property(o => o.PaymentStatus)
+                   .HasConversion<string>()
                    .HasMaxLength(50)
-                   .HasDefaultValue("Pending");
+                   .HasDefaultValue(PaymentStatus.Pending);
+
+            builder.Property(o => o.PaymentMethod)
+                   .HasConversion<string>()
+                   .HasMaxLength(50);
+
 
             builder.Property(o => o.ShippingAddress)
                    .IsRequired();
-
-            builder.Property(o => o.Notes);
 
             builder.Property(o => o.CreatedAt)
                    .HasDefaultValueSql("GETDATE()");
