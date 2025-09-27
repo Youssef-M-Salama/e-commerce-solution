@@ -20,7 +20,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
-namespace ECommerce.Infrastructure.DependencyInjection.Extensions
+namespace ECommerce.DependencyInjection.Extensions
 {
     public static class DependencyInjection
     {

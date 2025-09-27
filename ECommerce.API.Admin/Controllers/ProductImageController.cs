@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ECommerce.API.Admin.Controllers
 {
     [ApiController]
-    [Route("api/admin/products/{productId:int}/images")]
+    [Route("api/products/{productId:int}/images")]
     public class ProductImagesController : ControllerBase
     {
         private readonly ProductImageService _service;

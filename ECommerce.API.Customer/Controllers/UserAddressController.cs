@@ -1,13 +1,13 @@
 ﻿using ECommerce.API.Admin.Application.DTOs;
 using ECommerce.API.Admin.Application.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace ECommerce.API.Admin.Controllers
+namespace ECommerce.API.Customer.Controllers
 {
     [ApiController]
     [Route("api/user-addresses")]
-    [Authorize(Roles = "SuperAdmin,Admin")]
     public class UserAddressController : ControllerBase
     {
         private readonly UserAddressService _addressService;
@@ -17,7 +17,7 @@ namespace ECommerce.API.Admin.Controllers
             _addressService = addressService;
         }
 
-        
+      
         // GET api/admin/user-addresses/user/3
         [HttpGet("user/{userId:int}")]
         public async Task<IActionResult> GetByUserId([FromRoute] int userId)

@@ -1,10 +1,9 @@
 ﻿using ECommerce.API.Admin.Application.DTOs;
-using ECommerce.API.Admin.Application.Errors;
 using ECommerce.API.Admin.Application.Services;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
-namespace ECommerce.API.Admin.Controllers
+namespace ECommerce.API.Customer.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -45,30 +44,5 @@ namespace ECommerce.API.Admin.Controllers
             var response = await _categoryService.GetWithChildrenAsync(id);
             return StatusCode(response.StatusCode, response);
         }
-
-        // -------------------- CREATE --------------------
-        [HttpPost]
-        public async Task<IActionResult> Create([FromForm] CategoryDto dto)
-        {
-            var response = await _categoryService.CreateAsync(dto);
-            return StatusCode(response.StatusCode, response);
-        }
-
-        // -------------------- UPDATE --------------------
-        [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update([FromRoute] int id, [FromForm] CategoryDto dto)
-        {
-            var response = await _categoryService.UpdateAsync(id, dto);
-            return StatusCode(response.StatusCode, response);
-        }
-
-        // -------------------- DELETE --------------------
-        [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete([FromRoute] int id)
-        {
-            var response = await _categoryService.DeleteAsync(id);
-            return StatusCode(response.StatusCode, response);
-        }
-
     }
 }

@@ -1,9 +1,5 @@
-﻿using ECommerce.API.Admin.Application.Mapping;
-using ECommerce.API.Admin.Application.Validators;
-using ECommerce.Application.Shared;
-using ECommerce.Domain.Entities;
+﻿using ECommerce.Application.Shared;
 using ECommerce.DependencyInjection.Extensions;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
@@ -20,7 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Admin API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Customer API", Version = "v1" });
 
     var securityScheme = new OpenApiSecurityScheme
     {
@@ -96,6 +92,5 @@ app.MapControllers();
 // ---------------------------
 await app.Services.SeedIdentityDataAsync();
 app.Run();
-
 
 

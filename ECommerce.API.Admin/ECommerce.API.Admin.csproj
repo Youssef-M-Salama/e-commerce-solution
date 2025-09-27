@@ -12,8 +12,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\ECommerce.Application\ECommerce.Application.csproj" />
-		<ProjectReference Include="..\ECommerce.Infrastructure.DependencyInjection\ECommerce.Infrastructure.DependencyInjection.csproj" />
+	  <ProjectReference Include="..\ECommerce.DependencyInjection\ECommerce.DependencyInjection.csproj" />
 	</ItemGroup>
 
 </Project>
