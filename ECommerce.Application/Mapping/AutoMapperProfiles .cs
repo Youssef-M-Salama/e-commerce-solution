@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using ECommerce.API.Admin.Application.DTOs;
+using ECommerce.Application.DTOs.Cart;
 using ECommerce.Domain.Entities;
 
 namespace ECommerce.API.Admin.Application.Mapping
@@ -86,6 +87,12 @@ namespace ECommerce.API.Admin.Application.Mapping
                 .ForAllMembers(opt => opt.Condition((src, dest, srcMember) => srcMember != null)); // optional: only map non-null
 
             CreateMap<UserAddress, UserAddressReadDto>().ReverseMap();
+            CreateMap<CartItem, CartItemReadDto>()
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name));
+
+            CreateMap<CartItemCreateDto, CartItem>();
+            CreateMap<CartItemUpdateDto, CartItem>();
+            CreateMap<CartReadDto, Cart>().ReverseMap();
 
         }
     }

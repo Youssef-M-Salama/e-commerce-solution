@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using ECommerce.API.Admin.Application.DTOs;
 using ECommerce.API.Admin.Application.Errors;
+using ECommerce.API.Admin.Application.Services;
 using ECommerce.Application.Shared;
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Interfaces.Repositories;
@@ -29,7 +30,7 @@ namespace ECommerce.Application.Services
         private readonly JwtTokenHelper _jwtTokenHelper;
         private readonly IEmailService _emailService;
         private readonly IWishlistRepository _wishlistRepository;
-
+        private readonly CartService _cartService;
 
         public CustomerAuthService(
          JwtTokenHelper jwtTokenHelper,
@@ -45,8 +46,10 @@ namespace ECommerce.Application.Services
          IConfiguration configuration,
          ILogger<CustomerAuthService> logger,
          IEmailService emailService,
-         IWishlistRepository wishlistRepository) 
+         IWishlistRepository wishlistRepository,
+         CartService cartService) 
         {
+            _cartService = cartService ??throw new ArgumentNullException(nameof(cartService));
             _jwtTokenHelper = jwtTokenHelper ?? throw new ArgumentNullException(nameof(jwtTokenHelper));
             _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
@@ -112,6 +115,10 @@ namespace ECommerce.Application.Services
                     CreatedAt = DateTime.UtcNow
                 };
                 await _wishlistRepository.CreateWishlistAsync(wishlist, saveChanges: true);
+
+                // Automatically create an empty cart for the new user
+                
+                await _cartService.CreateAsync(user.Id);
 
                 var token = await _jwtTokenHelper.GenerateTokenAsync(user);
 
@@ -390,6 +397,9 @@ namespace ECommerce.Application.Services
 
                 // Delete wishlist after user deletion
                 await _wishlistRepository.DeleteWishlistAsync(userId, saveChanges: true);
+
+                // Delete cart after user deletion
+                await _cartService.DeleteAsync(user.Id);
 
 
                 return AppResponse<object>.SuccessResult(null, (int)HttpStatusCode.OK);

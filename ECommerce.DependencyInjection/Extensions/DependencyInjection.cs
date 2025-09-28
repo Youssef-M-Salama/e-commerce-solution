@@ -48,6 +48,7 @@ namespace ECommerce.DependencyInjection.Extensions
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IUserAddressRepository, UserAddressRepository>();
             services.AddScoped<IWishlistRepository, WishlistRepository>();
+            services.AddScoped<ICartRepository, CartRepository>();
 
             // ---------------------------
             // Services (only core, not Admin-specific)
@@ -60,6 +61,7 @@ namespace ECommerce.DependencyInjection.Extensions
             services.AddScoped<UserAddressService>();
             services.AddScoped<CustomerAuthService>();
             services.AddScoped<WishlistService>();
+            services.AddScoped<CartService>();
             // ---------------------------
             // Email Service
             services.AddScoped<IEmailService, SmtpEmailService>();

@@ -50,6 +50,11 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 });
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ValidateModelFilter>();
+});
+
 builder.Services.AddScoped<IEmailService, SmtpEmailService>();
 
 
