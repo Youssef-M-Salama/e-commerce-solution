@@ -3,6 +3,7 @@ using ECommerce.API.Admin.Application.Services;
 using ECommerce.API.Admin.Application.Validators;
 using ECommerce.Application.Services;
 using ECommerce.Application.Shared;
+using ECommerce.Customer.API.Application.Services;
 using ECommerce.Domain.Entities;
 using ECommerce.Domain.Helpers;
 using ECommerce.Domain.Interfaces.Repositories;
@@ -49,6 +50,8 @@ namespace ECommerce.DependencyInjection.Extensions
             services.AddScoped<IUserAddressRepository, UserAddressRepository>();
             services.AddScoped<IWishlistRepository, WishlistRepository>();
             services.AddScoped<ICartRepository, CartRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IOrderItemRepository, OrderItemRepository>();
 
             // ---------------------------
             // Services (only core, not Admin-specific)
@@ -62,6 +65,8 @@ namespace ECommerce.DependencyInjection.Extensions
             services.AddScoped<CustomerAuthService>();
             services.AddScoped<WishlistService>();
             services.AddScoped<CartService>();
+            services.AddScoped<CustomerOrderService>();
+            services.AddScoped<AdminOrderService>();
             // ---------------------------
             // Email Service
             services.AddScoped<IEmailService, SmtpEmailService>();

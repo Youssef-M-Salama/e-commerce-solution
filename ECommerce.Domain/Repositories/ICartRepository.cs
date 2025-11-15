@@ -13,6 +13,8 @@ namespace ECommerce.Domain.Repositories
         public Task CreateAsync(Cart cart, bool saveChanges = true)
         ;
         public Task DeleteAsync(Cart cart, bool saveChanges = true);
+        public  Task<bool> ClearCartAsync(int userId, bool saveChanges = true);
+
         // -------------------- CartItem --------------------
         public Task AddItemAsync(CartItem item, bool saveChanges = true);
         public Task<bool> DeleteAsync(int cartId, int productId, bool saveChanges = true);

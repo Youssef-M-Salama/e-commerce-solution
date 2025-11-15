@@ -18,7 +18,7 @@ namespace ECommerce.Domain.Entities
 
         public OrderStatus Status { get; set; }  =OrderStatus.Pending;
 
-        public PaymentStatus PaymentMethod { get; set; } 
+        public PaymentMethod PaymentMethod { get; set; } 
 
         public PaymentStatus PaymentStatus { get; set; } = PaymentStatus.Pending;
 

@@ -38,6 +38,28 @@ namespace ECommerce.Infrastructure.Repositories
             }
 
         }
+        // -------------------- Clear Cart --------------------
+        public async Task<bool> ClearCartAsync(int userId, bool saveChanges = true)
+        {
+            var cart = await _context.Carts
+                .Include(c => c.CartItems)
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            if (cart == null || !cart.CartItems.Any())
+            {
+                return false; // no cart found or already empty
+            }
+
+            _context.CartItems.RemoveRange(cart.CartItems);
+
+            if (saveChanges)
+            {
+                await _context.SaveChangesAsync();
+            }
+
+            return true;
+        }
+
 
         // -------------------- CartItem --------------------
         public async Task AddItemAsync(CartItem item,bool saveChanges = true)

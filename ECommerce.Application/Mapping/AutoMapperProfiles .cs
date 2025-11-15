@@ -90,9 +90,18 @@ namespace ECommerce.API.Admin.Application.Mapping
             CreateMap<CartItem, CartItemReadDto>()
                 .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name));
 
-            CreateMap<CartItemCreateDto, CartItem>();
-            CreateMap<CartItemUpdateDto, CartItem>();
+            CreateMap<CartItemCreateDto, CartItem>().ReverseMap();
+            CreateMap<CartItemUpdateDto, CartItem>().ReverseMap();
             CreateMap<CartReadDto, Cart>().ReverseMap();
+
+            CreateMap<Order, OrderReadDto>()
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
+                .ForMember(dest => dest.UserEmail, opt => opt.MapFrom(src => src.User.Email))
+                .ForMember(dest => dest.OrderItems, opt => opt.Ignore());
+
+            CreateMap<OrderItem, OrderItemReadDto>()
+                .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name))
+                .ForMember(dest => dest.TotalPrice, opt => opt.MapFrom(src => src.Quantity * src.UnitPrice));
 
         }
     }

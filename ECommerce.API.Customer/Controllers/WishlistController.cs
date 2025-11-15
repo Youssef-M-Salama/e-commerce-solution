@@ -7,6 +7,7 @@ namespace ECommerce.API.Customer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     public class WishlistController : ControllerBase
     {
         private readonly WishlistService _wishlistService;
