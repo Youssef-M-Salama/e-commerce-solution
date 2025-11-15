@@ -7,11 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECommerce.Domain", "ECommer
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECommerce.Infrastructure", "ECommerce.Infrastructure\ECommerce.Infrastructure.csproj", "{655668BB-8653-4DAD-AE44-EC767E54F3F1}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
-	ProjectSection(SolutionItems) = preProject
-		UserStories.md = UserStories.md
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECommerce.API.Admin", "ECommerce.API.Admin\ECommerce.API.Admin.csproj", "{3AC365BD-EB68-4FB6-AADF-FCE09093C5B6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECommerce.Application", "ECommerce.Application\ECommerce.Application.csproj", "{7090783C-FB08-4F09-80FD-67D08216FA6D}"
@@ -19,6 +14,12 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECommerce.API.Customer", "ECommerce.API.Customer\ECommerce.API.Customer.csproj", "{0424032E-284A-490D-A8A7-552AB2006226}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ECommerce.DependencyInjection", "ECommerce.DependencyInjection\ECommerce.DependencyInjection.csproj", "{C30A6F52-1421-2DB5-AB11-C82E3917D29A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\LEGION\Documents\post\docs\arch.png = ..\..\LEGION\Documents\post\docs\arch.png
+		..\..\LEGION\Documents\post\docs\e-commerce_ERD_Digram.drawio.png = ..\..\LEGION\Documents\post\docs\e-commerce_ERD_Digram.drawio.png
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
