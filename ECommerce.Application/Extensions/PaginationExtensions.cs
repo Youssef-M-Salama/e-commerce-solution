@@ -40,7 +40,7 @@ namespace ECommerce.API.Admin.Application.Extensions
                     TotalItems = 0,
                     TotalPages = 0
                 },
-                (int)HttpStatusCode.NotFound,
+                (int)HttpStatusCode.OK,
                 new List<string>
                 {
                     "No items found."

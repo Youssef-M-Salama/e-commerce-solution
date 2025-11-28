@@ -47,11 +47,12 @@ namespace ECommerce.API.Admin.Application.Services
 
                 var pagination = (totalBrands, page, pageSize).BuildPagination();
 
+                if (page > pagination.TotalPages && pagination.TotalPages > 0)
+                    return pagination.NotFoundPageResult<BrandReadDto>();
+
                 if (totalBrands == 0)
                     return PaginationExtensions.EmptyPageResult<BrandReadDto>(pageSize);
 
-                if (page > pagination.TotalPages && pagination.TotalPages > 0)
-                    return pagination.NotFoundPageResult<BrandReadDto>();
 
                 var pagedBrands = await _brandRepository.GetAllAsync(page, search ?? string.Empty, pageSize, asNoTracking: true);
                 var brandDtos = pagedBrands.Select(b => _mapper.Map<BrandReadDto>(b)).ToList();
